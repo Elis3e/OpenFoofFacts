@@ -1,93 +1,91 @@
-# OpenFoodFacts
+
+# Rapport TP Open Food Facts
+
+Ce rapport présente nos choix ainsi que les différentes étapes de la conception d'une partie d'un système décisionnel.
+
+L'objectif est de modéliser puis développer deux "cubes" Mondrian, la base de diffusion adaptée à ceux-ci à partir d'une base d'intégration existante et enfin les tester avec différentes requêtes.
+
+## Modélisation
+
+Pour le choix des cubes a été fait en analysant les requêtes demandées.
+- Un cube 'Produits' pour la mesure 'Nombre de produits' (= nb. de code-barres différents).
+- Un cube 'Versions Produits' pour la mesure 'Nombres de versions' (nb. d'entrées de la table).
+- Une dimension 'Date' utilisée pour la 'Date de création' d'un produit ainsi que la 'Date de version' pour la "version" d'un produit.
+- Une dimension 'Nutri-score'.
+- Une dimension 'Contributeur'. Une dimension 'Type de contributeur' a été envisagée** mais finalement non retenue car manque d'informations dans la base d'intégration.
+- Et une dimension 'Catégorie' qui va servir à créer de nouvelles requêtes requêtes.
+
+Une dimension 'Produit' a été envisagée mais finalement pas retenue car jugée non nécessaire pour le travail demandé.
 
 
+## Schéma relationnel de la base diffusion
 
-## Getting started
+Une table pour chaque dimension et une table de fait pour chaque cube avec les différentes contraintes de clé étrangères.
+Aucune dimension n'a été dégradée car nous avons jugé que cela n'était pas nécessaire.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Remplissage des tables de faits et dimensionnelles
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+L'extraction d'informations pour le remplissage des tables dimensionnelles a été faite à partir de SQL (Noeud Extraction depuis une table) car jugée simple et efficace. Concernant la dimension 'Nutriscore', les valeurs NULL (absence de nutri-score) ont été remplacées par la chaîne de caractère "Non renseigné".
 
-## Add your files
+L'extraction d'informations de la table de fait pour le cube "Versions Produits" a été faite également avec SQL suivi de plusieurs étapes intermédiaires de recherche pour mettre en relation la table des faits et les tables dimensionnelles associées.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Concernant la table de fait 'Produit', les mêmes étapes que pour la table de fait précédente avec une étape d'agrégation en plus sur les code-barres. 
 
+⚠️ Nous avons remarqué des codes barres similaires avec des dates de création différentes ce qui nous semblait anormal (voir capture d'écran). Nous avons donc fait le choix lors de l'étape d'agrégation de garder seulement le code-barres avec la date de création la plus récente car plus à jour d'après nos observations.
+
+## Requêtes MDX
+
+1. Nombre de produits par contributeur (rangées) et par année de création (colonnes)
+
+```mdx
+select Hierarchize({[Date de création].[Toutes années],
+[Date de création].[Année].Members}) ON COLUMNS,
+  [Contributeur].Members ON ROWS
+from [Produits]
 ```
-cd existing_repo
-git remote add origin https://gitlab.istic.univ-rennes1.fr/17009059/openfoodfacts.git
-git branch -M main
-git push -uf origin main
+
+2. Nombre de versions de produits par mois et année (lignes) selon la présence ou non du Nutri-score (colonnes).
+
+```mdx
+select [Nutri-score].Members ON COLUMNS,
+NON EMPTY Hierarchize({[Date de version].[Toutes années],
+[Date de version].[Année].Members,
+[Date de version].[Mois].Members})  ON ROWS
+from [Versions produits]
 ```
 
-## Integrate with your tools
+3. Nombre de produits par type de boisson/beverages (lignes) par année de création (colonnes)
 
-- [ ] [Set up project integrations](https://gitlab.istic.univ-rennes1.fr/17009059/openfoodfacts/-/settings/integrations)
+```mdx
+select Hierarchize({[Date de création].[Toutes années],
+[Date de création].[Année].Members}) ON COLUMNS,
+  Hierarchize({[Catégorie].Beverages,[Catégorie].Beverages.Children}) ON ROWS
+from [Produits]
+```
 
-## Collaborate with your team
+4. Nombre de produits par pnns1 (lignes) par années de création (colonnes) enregistrés par le contributeur "carrefour
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+```mdx
+select NON EMPTY Hierarchize({[Date de création].[Toutes années],
+[Date de création].[Année].Members}) ON COLUMNS,
+[Catégorie].[Pnns1].Members ON ROWS
+from [Produits]
+where [Contributeur].carrefour
+```
 
-## Test and Deploy
+## Annexe
 
-Use the built-in continuous integration in GitLab.
+Code SQL produits avec le même code-barres mais des dates de création différentes
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```md
+SELECT barcode, DATE(date_creation) AS creation_date
+FROM OFF_2_version_produit
+WHERE barcode IN (
+    SELECT barcode
+    FROM OFF_2_version_produit
+    GROUP BY barcode
+    HAVING COUNT(DISTINCT DAY(date_creation)) > 1
+        OR COUNT(DISTINCT MONTH(date_creation)) > 1
+        OR COUNT(DISTINCT YEAR(date_creation)) > 1
+);
+```
