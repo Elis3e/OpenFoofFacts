@@ -1,0 +1,62 @@
+<Schema name="OpenFoodFacts">
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Date">
+    <Hierarchy visible="true" hasAll="true" allMemberName="Toutes ann&#233;es" primaryKey="num_seq_date">
+      <Table name="OFF_date">
+      </Table>
+      <Level name="Ann&#233;e" visible="true" table="OFF_date" column="annee" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Mois" visible="true" table="OFF_date" column="mois" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Jour" visible="true" table="OFF_date" column="jour" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Cat&#233;gorie">
+    <Hierarchy visible="true" hasAll="true" allMemberName="Toutes cat&#233;gories" primaryKey="num_seq_pnns">
+      <Table name="OFF_pnns">
+      </Table>
+      <Level name="Pnns1" visible="true" column="pnns1" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Pnns2" visible="true" column="pnns2" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Contributeur">
+    <Hierarchy visible="true" hasAll="true" allMemberName="Tous contributeurs" primaryKey="num_seq_contributeur">
+      <Table name="OFF_contributeur">
+      </Table>
+      <Level name="pseudo" visible="true" column="pseudo" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Nutri-score">
+    <Hierarchy visible="true" hasAll="true" allMemberName="Tous nutri-scores" primaryKey="num_seq_nutriscore">
+      <Table name="OFF_nutriscore">
+      </Table>
+      <Level name="Nutri-score" visible="true" table="OFF_nutriscore" column="nutriscore_lettre" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Cube name="Produits" visible="true" cache="true" enabled="true">
+    <Table name="OFF_faits_produit" alias="">
+    </Table>
+    <DimensionUsage source="Cat&#233;gorie" name="Cat&#233;gorie" visible="true" foreignKey="num_seq_pnns" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Contributeur" name="Contributeur" visible="true" foreignKey="num_seq_contributeur" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Date" name="Date de cr&#233;ation" visible="true" foreignKey="num_seq_date_creation" highCardinality="false">
+    </DimensionUsage>
+    <Measure name="Nombre de produits" column="num_seq_date_creation" datatype="Integer" aggregator="count" visible="true">
+    </Measure>
+  </Cube>
+  <Cube name="Versions produits" visible="true" cache="true" enabled="true">
+    <Table name="OFF_faits_version_produit">
+    </Table>
+    <DimensionUsage source="Date" name="Date de version" visible="true" foreignKey="num_seq_date_version" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Nutri-score" name="Nutri-score" visible="true" foreignKey="num_seq_nutriscore" highCardinality="false">
+    </DimensionUsage>
+    <Measure name="Nombre de versions" column="num_seq_date_version" datatype="Integer" aggregator="count" visible="true">
+    </Measure>
+  </Cube>
+</Schema>
