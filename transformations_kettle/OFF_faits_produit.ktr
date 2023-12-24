@@ -436,7 +436,7 @@
   <notepads>
   </notepads>
   <connection>
-    <name>OFF BD 2</name>
+    <name>BD</name>
     <server>mysql.istic.univ-rennes1.fr</server>
     <type>MYSQL</type>
     <access>Native</access>
@@ -499,7 +499,7 @@
     </attributes>
   </connection>
   <connection>
-    <name>OFF_BI 2</name>
+    <name>BI</name>
     <server>mysql.istic.univ-rennes1.fr</server>
     <type>MYSQL</type>
     <access>Native</access>
@@ -679,7 +679,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>OFF BD 2</connection>
+    <connection>BD</connection>
     <schema>base_17009059</schema>
     <table>OFF_faits_produit</table>
     <commit>1000</commit>
@@ -739,7 +739,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>OFF_BI 2</connection>
+    <connection>BI</connection>
     <sql>SELECT
   barcode,
   DATE(date_creation) as date_creation,
@@ -1034,7 +1034,7 @@ ORDER BY barcode ASC;
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>OFF BD 2</connection>
+    <connection>BD</connection>
     <cache>N</cache>
     <cache_load_all>N</cache_load_all>
     <cache_size>0</cache_size>
@@ -1094,7 +1094,7 @@ ORDER BY barcode ASC;
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>OFF BD 2</connection>
+    <connection>BD</connection>
     <cache>N</cache>
     <cache_load_all>N</cache_load_all>
     <cache_size>0</cache_size>
@@ -1142,7 +1142,7 @@ ORDER BY barcode ASC;
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>OFF BD 2</connection>
+    <connection>BD</connection>
     <cache>N</cache>
     <cache_load_all>N</cache_load_all>
     <cache_size>0</cache_size>

@@ -587,22 +587,22 @@
     <hop>
       <from>BI OFF_2_contributeur</from>
       <to>BD OFF_dim_contributeur</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>BI extraction dates OFF_2_version_produit</from>
       <to>BD OFF_dim_date</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>BI OFF_2_pnns</from>
       <to>BD OFF_dim_pnns</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>BI extraction nutri. OFF_2_version_produit</from>
       <to>BD OFF_dim_nutriscore</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
   </order>
   <step>
@@ -813,7 +813,7 @@
       <schema_name/>
     </partitioning>
     <connection>OFF_BI</connection>
-    <sql>SELECT DISTINCT * FROM OFF_contributeur</sql>
+    <sql>SELECT DISTINCT * FROM OFF_2_contributeur</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -827,7 +827,7 @@
         <name>pseudo</name>
         <length>254</length>
         <precision>-1</precision>
-        <origin>Extraction contributeur OFF_2_contributeur</origin>
+        <origin>BI OFF_2_contributeur</origin>
         <comments>pseudo</comments>
         <conversion_Mask/>
         <decimal_symbol>,</decimal_symbol>
