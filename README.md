@@ -1,5 +1,4 @@
-
-# Rapport TP Open Food Facts
+# Projet Open Food Facts
 
 Ce rapport présente nos choix ainsi que les différentes étapes de la conception d'une partie d'un système décisionnel.
 
