@@ -30,7 +30,7 @@ L'extraction d'informations de la table de fait pour le cube "Versions Produits"
 
 Concernant la table de fait 'Produit', les mêmes étapes que pour la table de fait précédente avec une étape d'agrégation en plus sur les code-barres. 
 
-⚠️ Nous avons remarqué des codes barres similaires avec des dates de création différentes ce qui nous semblait anormal (voir capture d'écran). Nous avons donc fait le choix lors de l'étape d'agrégation de garder seulement le code-barres avec la date de création la plus récente car plus à jour d'après nos observations.
+⚠️ Nous avons constaté que certains codes‑barres identiques présentaient des dates de création différentes, ce qui nous a semblé anormal (voir capture d’écran). Lors de l’étape d’agrégation, nous avons donc choisi de conserver uniquement le code‑barres associé à la date de création la plus récente, car les informations correspondantes paraissaient plus à jour selon nos observations.
 
 ## Requêtes MDX
 
