@@ -11,7 +11,7 @@ Pour le choix des cubes a été fait en analysant les requêtes demandées.
 - Un cube 'Versions Produits' pour la mesure 'Nombres de versions' (nb. d'entrées de la table).
 - Une dimension 'Date' utilisée pour la 'Date de création' d'un produit ainsi que la 'Date de version' pour la "version" d'un produit.
 - Une dimension 'Nutri-score'.
-- Une dimension 'Contributeur'. Une dimension 'Type de contributeur' a été envisagée** mais finalement non retenue car manque d'informations dans la base d'intégration.
+- Une dimension 'Contributeur'. Une dimension 'Type de contributeur' a été envisagée mais finalement non retenue car manque d'informations dans la base d'intégration.
 - Et une dimension 'Catégorie' qui va servir à créer de nouvelles requêtes requêtes.
 
 Une dimension 'Produit' a été envisagée mais finalement pas retenue car jugée non nécessaire pour le travail demandé.
